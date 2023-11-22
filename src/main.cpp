@@ -14,7 +14,10 @@ int main() {
 }
 
 //! Добавить проверку на норму и соответсвующие действия если проверка не проходится
-/*std::pair<Matrix_t, int>*/ void SeidelMethod(Matrix_t A, Matrix_t b, double eps) {
+/*
+@std::pair<Matrix_t, int>
+*/ 
+void SeidelMethod(Matrix_t A, Matrix_t b, double eps) {
     int n = b.lines;
     Matrix_t d(n, 1);
     for (int i = 0; i < n; i++) {
@@ -30,7 +33,9 @@ int main() {
             }
         }
     }
-    
+    Matrix_t x0(n, 1);
+    Matrix_t x1(d);
+    while ()
 }
 
 //! Добавить проверку на норму и соответсвующие действия если проверка не проходится
