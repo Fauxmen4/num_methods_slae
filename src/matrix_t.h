@@ -38,5 +38,12 @@ public:
 
     double FirstNorm();
     double SecondNorm();   
-    double InfiniteNorm();
+    double InfNorm();
+
+    bool NotNull();
+
+    void Clear();
 };
+
+std::pair<Matrix_t, int> SimpleIterMethod(Matrix_t A, Matrix_t b, double eps);
+std::pair<Matrix_t, int> SeidelMethod(Matrix_t A, Matrix_t b, double eps);

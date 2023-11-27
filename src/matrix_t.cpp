@@ -194,7 +194,7 @@ double Matrix_t::SecondNorm() {
     return 0;
 }
 
-double Matrix_t::InfiniteNorm() {
+double Matrix_t::InfNorm() {
     double res = -100000;
     for (int i = 0; i < this->lines; i++) {
         double tmp = 0;
@@ -204,4 +204,22 @@ double Matrix_t::InfiniteNorm() {
         res =std::max(tmp, res);
     }
     return res;
+}
+
+bool Matrix_t::NotNull() {
+    for (int i = 0; i < this->lines; i++) {
+        for (int j = 0; j < this->columns; j++) {
+            if (this->matrix[i][j] == 0) 
+                return false; 
+        }
+    }
+    return true;
+}
+
+void Matrix_t::Clear() {
+    for (int i = 0; i < this->lines; i++) {
+        for (int j = 0; j < this->columns; j++) {
+            this->matrix[i][j] = 0;
+        }
+    }
 }

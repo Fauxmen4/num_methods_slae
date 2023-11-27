@@ -1,5 +1,5 @@
 CC=g++
-SOURCES=src/main.cpp src/matrix_t.cpp
+SOURCES=src/main.cpp src/matrix_t.cpp src/methods.cpp
 
 run: build
 	@./bin/main
