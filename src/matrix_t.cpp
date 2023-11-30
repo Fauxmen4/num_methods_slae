@@ -7,6 +7,11 @@ Matrix_t::Matrix_t(int lines, int columns) {
     }
     this->lines = lines;
     this->columns = columns;
+    for (int i = 0; i < lines; i++) {
+        for (int j = 0; j < columns; j++) {
+            matrix[i][j] = 0;
+        }
+    }
 }
 
 Matrix_t::Matrix_t(const Matrix_t &other) {
@@ -23,6 +28,19 @@ Matrix_t::Matrix_t(const Matrix_t &other) {
     }
 }
 
+// Matrix_t::Matrix_t(int n) {
+//     this->lines = n;
+//     this->columns = n;
+//     this->matrix = new double*[lines];
+//     for(int i = 0; i < this->lines; i++) {
+//         matrix[i] = new double[columns];
+//     }
+//     for (int i = 0; i < lines; i++) {
+//         this->matrix[i][i] = 1;
+//     }
+// }
+
+
 Matrix_t::Matrix_t(int n) {
     this->lines = n;
     this->columns = n;
@@ -31,7 +49,12 @@ Matrix_t::Matrix_t(int n) {
         matrix[i] = new double[columns];
     }
     for (int i = 0; i < lines; i++) {
-        this->matrix[i][i] = 1;
+        for (int j = 0; j < columns; j++) {
+            if (i == j)
+                this->matrix[i][j] = 1;
+            else 
+                this->matrix[i][j] = 0;
+        }
     }
 }
 
@@ -190,8 +213,34 @@ double Matrix_t::FirstNorm() {
     return res;   
 }
 
-double Matrix_t::SecondNorm() {
-    return 0;
+// double Matrix_t::SecondNorm() {
+//     int n = this->lines;
+//     Matrix_t A = *this;
+//     A = A.Transpose() * A;
+//     //A.Print();
+//     Eigen::MatrixXd ACopy(n, n);
+//     for (int i = 0; i < n; i++) {
+//         for (int j = 0; j < n; j++) {
+//             ACopy(i, j) = A.matrix[i][j];
+//         }
+//     }
+//     //std::cout << ACopy << '\n';
+//     Eigen::VectorXcd eivals = ACopy.eigenvalues();
+//     double maxEiVal = -1;
+//     for (auto &i : eivals) {
+        
+//     }
+//      Change sqrt to heron's formula
+//     return sqrt(maxEiVal);
+// }
+
+double Matrix_t::SecondVectorNorm() {
+    int n = this->lines;
+    double num;
+    for (int i = 0; i < n; i++) {
+        num += (this->matrix[i][0])*(this->matrix[i][0]);
+    }
+    return sqrt(num);
 }
 
 double Matrix_t::InfNorm() {
@@ -221,5 +270,51 @@ void Matrix_t::Clear() {
         for (int j = 0; j < this->columns; j++) {
             this->matrix[i][j] = 0;
         }
+    }
+}
+
+Matrix_t Matrix_t::Cut(int b1, int b2, int a1, int a2) {
+    Matrix_t res(b2-b1+1, a2-a1+1);
+    for (int i = b1; i < b2+1; i++) {
+        for (int j = a1; j < a2+1; j++) {
+            res.matrix[i-b1][j-a1] = this->matrix[i][j];
+        }
+    }
+    return res;
+}
+
+Matrix_t Ort(int n) {
+    Matrix_t res(n, 1);
+    res.matrix[0][0] = 1;
+    return res;
+}
+
+Matrix_t E(int n) {
+    Matrix_t res(n, n);
+    for (int i = 0; i < res.lines; i++) {
+        for (int j = 0; j < res.columns; j++) {
+            if (i == j)
+                res.matrix[i][j] = 1;
+            else
+                res.matrix[i][j] = 0;
+        }
+    }
+    return res;
+}
+
+void Matrix_t::Insert(int b1, int b2, int a1, int a2, const Matrix_t& other) {
+    for (int i = b1; i < b2+1; i++) {
+        for (int j = a1; j < a2+1; j++) {
+            this->matrix[i][j] = other.matrix[i-b1][j-a1];
+        }
+    }
+}
+
+void Matrix_t::SwapLines(int l1, int l2) {
+    for (int i = 0; i < this->columns; i++) {
+        double tmp;
+        tmp = this->matrix[l1][i];
+        this->matrix[l1][i] = this->matrix[l2][i];
+        this->matrix[l2][i] = tmp;
     }
 }

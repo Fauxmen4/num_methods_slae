@@ -3,6 +3,8 @@
 #include <math.h>
 #include <algorithm>
 #include <tuple>
+#include <Eigen/Eigenvalues>
+#include <Eigen/Dense>
 
 class Matrix_t 
 {
@@ -37,13 +39,24 @@ public:
     int Det();      //! Not implemented yet
 
     double FirstNorm();
-    double SecondNorm();   
+    double SecondVectorNorm();   
     double InfNorm();
 
     bool NotNull();
 
     void Clear();
+
+    Matrix_t Cut(int b1, int b2, int a1, int a2);
+    void Insert(int b1, int b2, int a1, int a2, const Matrix_t& other);
+    void SwapLines(int l1, int l2);
 };
+
+Matrix_t Ort(int n);
+Matrix_t E(int n);
 
 std::pair<Matrix_t, int> SimpleIterMethod(Matrix_t A, Matrix_t b, double eps);
 std::pair<Matrix_t, int> SeidelMethod(Matrix_t A, Matrix_t b, double eps);
+
+Matrix_t Gauss(Matrix_t A, Matrix_t b);
+Matrix_t QR(Matrix_t A, Matrix_t b);
+Matrix_t LU(Matrix_t A, Matrix_t b);
