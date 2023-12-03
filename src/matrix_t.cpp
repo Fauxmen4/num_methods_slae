@@ -202,7 +202,7 @@ int Matrix_t::Det() {
 }
 
 double Matrix_t::FirstNorm() {
-    double res = -100000;
+    double res = 0;
     for (int i = 0; i < this->columns; i++) {
         double tmp = 0;
         for (int j = 0; j < this->lines; j++) {
@@ -317,4 +317,29 @@ void Matrix_t::SwapLines(int l1, int l2) {
         this->matrix[l1][i] = this->matrix[l2][i];
         this->matrix[l2][i] = tmp;
     }
+}
+
+bool Matrix_t::IsPositiveDefined() {
+    Eigen::MatrixXd newA(this->lines, this->lines);
+	for (int i = 0; i < this->lines; i++) {
+		for (int j = 0; j < this->lines; j++) {
+			newA(i, j) = this->matrix[i][j];
+		}
+	}
+	Eigen::EigenSolver<Eigen::MatrixXd> solver(newA);
+	for (int i = 0; i < this->lines; i++)
+		if (solver.eigenvalues()[i].real() <= 0) return false;
+	return true;
+}
+
+bool Matrix_t::IsDiagonallyDominant() {
+    for (int i = 0; i < this->lines; i++) {
+        double sum = 0;
+        for (int j = 0; j < this->lines; j++) {
+            if (j != i) sum += abs(this->matrix[i][j]);
+        }
+        if (abs(this->matrix[i][i]) < sum)
+            return false;
+    }
+    return true;
 }

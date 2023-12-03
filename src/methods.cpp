@@ -1,7 +1,26 @@
 #include "matrix_t.h"
 
-//! Добавить проверку на норму и соответсвующие действия если проверка не проходится
+std::pair<Matrix_t, Matrix_t> EnterSLAE(int n, std::string testPath) {
+    std::ifstream fin;
+    fin.open(testPath);
+    Matrix_t A(n, n);
+    Matrix_t b(n, 1);
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            fin >> A.matrix[i][j];
+        }
+    }
+    for (int i = 0; i < n; i++) {
+        fin >> b.matrix[i][0];
+    }
+    fin.close();
+    return std::pair<Matrix_t, Matrix_t>(A, b);
+}
+
 std::pair<Matrix_t, int> SeidelMethod(Matrix_t A, Matrix_t b, double eps) {
+    Matrix_t transA(A.Transpose());
+    A = transA * A;
+    b = transA * b;
     int n = b.lines;
     Matrix_t d(n, 1);
     for (int i = 0; i < n; i++) {
@@ -19,7 +38,7 @@ std::pair<Matrix_t, int> SeidelMethod(Matrix_t A, Matrix_t b, double eps) {
     Matrix_t x0(d);
     Matrix_t x1(n, 1);
     int count = 0;
-    while ((A*x1-b).InfNorm() > eps) {
+    while ((A*x1-b).FirstNorm() > eps) {
         if (count != 0) {
             x0 = x1;
         }
@@ -42,24 +61,25 @@ std::pair<Matrix_t, int> SeidelMethod(Matrix_t A, Matrix_t b, double eps) {
     return std::pair<Matrix_t, int>{x1, count};
 }
 
-
-//! Добавить проверку на норму и соответсвующие действия если проверка не проходится
 std::pair<Matrix_t, int> SimpleIterMethod(Matrix_t A, Matrix_t b, double eps) {
-    int n = b.lines;
-    double mu = 1/A.FirstNorm();
-    Matrix_t B(n); B = B - mu*A;
-    Matrix_t c(n, 1); c = mu*b;
+    Matrix_t T(A.Transpose());
+    A = T*A;
+    b = T*b;
+    double mu = 1 / A.FirstNorm();
+    Matrix_t B = E(A.lines)-A*mu;
+
+    Matrix_t c(b*mu);
     Matrix_t x0(c);
-    Matrix_t x1(n, 1);
+    Matrix_t x1(c);
     int count = 0;
-    while (B.FirstNorm()/(1-B.FirstNorm())*(x1-x0).FirstNorm() > eps) {
-        if (count != 0) {
-            x0 = x1;
-        }
+    while (true) {
         x1 = B*x0+c;
-        count += 1;
+        count++;
+        if ((A*x1-b).FirstNorm() < eps) {
+            return std::pair<Matrix_t, int>{x1, count};
+        }
+        x0 = x1;
     }
-    return std::pair<Matrix_t, int>{x1, count};
 }
 
 Matrix_t QR(Matrix_t A, Matrix_t b) {
@@ -159,3 +179,53 @@ Matrix_t LU(Matrix_t A, Matrix_t b) {
     }
     return x;
 }
+
+Matrix_t Solution(Matrix_t A, Matrix_t b) {
+    Eigen::MatrixXf newA(A.lines, A.columns);
+    for (int i = 0; i < A.lines; i++) {
+        for (int j = 0; j < A.columns; j++) {
+            newA(i, j) = A.matrix[i][j];
+        }
+    }
+    //std::cout << newA << '\n';
+    Eigen::VectorXf newB(b.lines);
+    for (int i = 0; i < b.lines; i++) {
+        newB(i) = b.matrix[i][0];
+    }
+    //std::cout << newB << '\n';
+    Eigen::VectorXf solution = newA.colPivHouseholderQr().solve(newB);
+    Matrix_t x(b.lines, 1);    
+    for (int i = 0; i < b.lines; i++) {
+        x.matrix[i][0] = solution(i);
+    }
+    return x;
+}
+
+// Matrix_t Solution(Matrix_t A, Matrix_t b) {
+//     int n = A.lines;
+//     Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> newA(n, n);
+//     Eigen::Vector<double,Eigen::Dynamic> newB(n);
+//     for (int i = 0; i < n; i++) {
+//         for (int j = 0; j < n; j++) {
+//             newA << A.matrix[i][j];
+//         }
+//         newB << b.matrix[i][0];
+//     }
+
+//     Matrix_t e(3);
+//     return e;
+// }
+
+// Matrix_t Solution(Matrix_t A, Matrix_t b) {
+//     int n = A.lines;
+//     Eigen::Matrix3f newA;
+//     Eigen::Vector3f newB;
+//     for (int i = 0; i < n; i++) {
+//         for (int j = 0; j < n; j++) {
+//             newA << A.matrix[i][j];
+//         }
+//         newB << b.matrix[i][0];
+//     }
+//     Eigen::Vector3f x = newA.ldlt().solve(newB);
+//     x[]
+// }

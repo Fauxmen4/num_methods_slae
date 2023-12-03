@@ -3,6 +3,8 @@
 #include <math.h>
 #include <algorithm>
 #include <tuple>
+#include <string>
+#include <fstream>
 #include <Eigen/Eigenvalues>
 #include <Eigen/Dense>
 
@@ -36,7 +38,7 @@ public:
 
     Matrix_t Transpose();
 
-    int Det();      //! Not implemented yet
+    int Det();
 
     double FirstNorm();
     double SecondVectorNorm();   
@@ -49,6 +51,8 @@ public:
     Matrix_t Cut(int b1, int b2, int a1, int a2);
     void Insert(int b1, int b2, int a1, int a2, const Matrix_t& other);
     void SwapLines(int l1, int l2);
+    bool IsPositiveDefined();
+    bool IsDiagonallyDominant();
 };
 
 Matrix_t Ort(int n);
@@ -57,6 +61,9 @@ Matrix_t E(int n);
 std::pair<Matrix_t, int> SimpleIterMethod(Matrix_t A, Matrix_t b, double eps);
 std::pair<Matrix_t, int> SeidelMethod(Matrix_t A, Matrix_t b, double eps);
 
-Matrix_t Gauss(Matrix_t A, Matrix_t b);
 Matrix_t QR(Matrix_t A, Matrix_t b);
 Matrix_t LU(Matrix_t A, Matrix_t b);
+
+std::pair<Matrix_t, Matrix_t> EnterSLAE(int n, std::string testPath); //* For testing purpose
+
+Matrix_t Solution(Matrix_t A, Matrix_t b);
