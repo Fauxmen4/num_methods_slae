@@ -196,11 +196,12 @@ Matrix_t LU(Matrix_t A, Matrix_t b) {
     }
     //? L и U готовы
     //? Решение уравнения Ly = Pb
-    b = P*b;
+    Matrix_t b1(P*b);
+    //b1.Print();
     Matrix_t y(n,1);
-    y.matrix[0][0] = b.matrix[0][0];
+    y.matrix[0][0] = b1.matrix[0][0];
     for (int i = 1; i < n; i++) {
-        y.matrix[i][0] = b.matrix[i][0];
+        y.matrix[i][0] = b1.matrix[i][0];
         for (int j = 0; j < i; j++) {
             y.matrix[i][0] -= L.matrix[i][j]*y.matrix[j][0];
         }
