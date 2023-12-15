@@ -90,6 +90,7 @@ std::pair<Matrix_t, int> SeidelMethod(Matrix_t A, Matrix_t b, double eps) {
 std::pair<Matrix_t, int> SimpleIterMethod(Matrix_t A, Matrix_t b, double eps) {
     double mu = 1 / A.FirstNorm();
     Matrix_t B = E(A.lines)-A*mu;
+
     if (B.FirstNorm() >= 1) {
         Matrix_t T(A.Transpose());
         A = T*A;
@@ -97,27 +98,33 @@ std::pair<Matrix_t, int> SimpleIterMethod(Matrix_t A, Matrix_t b, double eps) {
         mu = 1 / A.FirstNorm();
         B = E(A.lines)-A*mu;
     }
-    Matrix_t c(b*mu);
-    Matrix_t x0(c);
-    Matrix_t x1(c);
-    int count = 0; 
-    while (true) {
-        x1 = B*x0+c;
-        count++;
+    
+    // Matrix_t c(b*mu);
+    // Matrix_t x0(c);
+    // Matrix_t x1(c);
+    // int count = 0; 
 
-        if (B.FirstNorm() >= 1) {
-            if ((A*x1-b).FirstNorm() < eps) 
-                return std::pair<Matrix_t, int>{x1, count};
-        } else {
-            if (B.FirstNorm()/(1-B.FirstNorm())*(x1-x0).FirstNorm() < eps) 
-                return std::pair<Matrix_t, int>{x1, count};
-        }
+
+    // while (true) {
+    //     x1 = B*x0+c;
+    //     count++;
+
+    //     if (B.FirstNorm() >= 1) {
+    //         if ((A*x1-b).FirstNorm() < eps) 
+    //             return std::pair<Matrix_t, int>{x1, count};
+    //     } else {
+    //         if (B.FirstNorm()/(1-B.FirstNorm())*(x1-x0).FirstNorm() < eps) 
+    //             return std::pair<Matrix_t, int>{x1, count};
+    //     }
         
-        // if ((A*x1-b).FirstNorm() < eps) {
-        //     return std::pair<Matrix_t, int>{x1, count};
-        // }
-        x0 = x1;
-    }
+    //     // if ((A*x1-b).FirstNorm() < eps) {
+    //     //     return std::pair<Matrix_t, int>{x1, count};
+    //     // }
+    //     x0 = x1;
+    // }
+
+    Matrix_t hehehe(3,3);
+    return std::pair<Matrix_t, int>{hehehe, 666};
 }
 
 Matrix_t QR(Matrix_t A, Matrix_t b) {
