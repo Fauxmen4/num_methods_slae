@@ -38,7 +38,7 @@ public:
 
     Matrix_t Transpose();
 
-    int Det();
+    double Det();
 
     double FirstNorm();
     double SecondVectorNorm();   

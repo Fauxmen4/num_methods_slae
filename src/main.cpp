@@ -22,10 +22,8 @@ const std::string testDir = "/home/parz1val/Documents/amcp/num_methods/tests/";
 
 // int main() {
 //     Matrix_t A(3, 3);
-//     Matrix_t b(3, 1);
 //     A.Enter();
-//     b.Enter();
-//     Solution(A, b).Print();
+//     std::cout << A.IsPositiveDefined();
 // }
 
 int main() {

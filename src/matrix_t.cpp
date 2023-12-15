@@ -196,9 +196,60 @@ Matrix_t Matrix_t::Transpose() {
     return tmp;
 }
 
-//! Not implemented yet
-int Matrix_t::Det() {
-    return 0;   
+
+
+// double Matrix_t::Det() {
+//     Matrix_t M(this->lines, 2*this->lines-1);
+//     for (int i = 0; i < this->lines; i++) {
+//         for (int j = 0; j < M.columns; j++) {
+//             M.matrix[i][j] = this->matrix[i][j%this->columns];
+//         }
+//     }
+//     double det = 0;
+//     for (int i = 0; i < this->lines; i++) {
+//         int x = 0, y = i;
+//         double current_sum = 1;
+//         for(int count = 0; count < this->lines; count++) {
+//             std::cout << x % this->lines << " " << y % this->lines << '\n';
+//             current_sum *= this->matrix[x][y];
+//             y++;
+//             x++;
+//         }
+//         std::cout << current_sum << '\n';
+//         det += current_sum;
+//         current_sum = 1;
+//     }
+
+//     //M.Print();
+
+//     return 0;
+// }
+
+double Matrix_t::Det() {
+    double det = 0;
+    for (int i = 0; i < this->lines; i++) {
+        int x = 0, y = i;
+        double current_sum = 1;
+        for (int count = 0; count < this->lines; count++) {
+            current_sum *= this->matrix[x][y];
+            x++; x %= this->lines;
+            y++; y %= this->lines;
+        }
+        det += current_sum;
+    }
+
+    for (int i = 0; i < this->lines; i++) {
+        int x = this->lines-1, y = i;
+        double current_sum = 1;
+        for (int count = 0; count < this->lines; count++) {
+            current_sum *= this->matrix[x][y];
+            x--; x %= this->lines;
+            y++; y %= this->lines;
+        }
+        det -= current_sum;
+    }
+
+    return det;
 }
 
 double Matrix_t::FirstNorm() {
@@ -319,17 +370,26 @@ void Matrix_t::SwapLines(int l1, int l2) {
     }
 }
 
+// bool Matrix_t::IsPositiveDefined() {
+//     Eigen::MatrixXd newA(this->lines, this->lines);
+// 	for (int i = 0; i < this->lines; i++) {
+// 		for (int j = 0; j < this->lines; j++) {
+// 			newA(i, j) = this->matrix[i][j];
+// 		}
+// 	}
+// 	Eigen::EigenSolver<Eigen::MatrixXd> solver(newA);
+// 	for (int i = 0; i < this->lines; i++)
+// 		if (solver.eigenvalues()[i].real() <= 0) return false;
+// 	return true;
+// }
+
 bool Matrix_t::IsPositiveDefined() {
-    Eigen::MatrixXd newA(this->lines, this->lines);
-	for (int i = 0; i < this->lines; i++) {
-		for (int j = 0; j < this->lines; j++) {
-			newA(i, j) = this->matrix[i][j];
-		}
-	}
-	Eigen::EigenSolver<Eigen::MatrixXd> solver(newA);
-	for (int i = 0; i < this->lines; i++)
-		if (solver.eigenvalues()[i].real() <= 0) return false;
-	return true;
+    for (int i = 0; i < this->lines; i++) {
+        if (this->Cut(0,i,0,i).Det() <= 0) {
+            return false;
+        }
+    }
+    return true;
 }
 
 bool Matrix_t::IsDiagonallyDominant() {
